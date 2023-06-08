@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatTab } from '@angular/material/tabs';
+import { MatTableDataSource } from '@angular/material/table';
 import { CategoryService } from 'src/app/modules/shared/services/category.service';
 import { NewCategoryComponent } from '../new-category/new-category.component';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
@@ -22,6 +21,8 @@ export class CategoryComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'description', 'actions'];
   dataSource = new MatTableDataSource<CategoryElement>();
 
+
+  //obtenemos las categorias
   getCategories() {
     this.categoryService.getCategories().subscribe((data) => {
       console.log(data);
@@ -29,6 +30,8 @@ export class CategoryComponent implements OnInit {
     });
   }
 
+
+  //procesamos la respuesta de las categorias
   processCategoryResponse(resp: any) {
 
     const dataCategory: CategoryElement[] = [];
@@ -44,7 +47,8 @@ export class CategoryComponent implements OnInit {
     
   }
 
-  openCateryDialog() {
+  //abrimos el dialogo para agregar una nueva categoria
+  openCategoryDialog() {
     const dialogRef = this.dialog.open(NewCategoryComponent, {
       width: '450px'});
     
@@ -55,19 +59,35 @@ export class CategoryComponent implements OnInit {
         this.getCategories();
       }else if(result == 2){
         this.openSnackBar('Error al agregar categoria', 'Error');
-      }
-
-      
+      }      
     });
   }
 
+
+  //abrimos el dialogo para editar una categoria
+  edit(id: number, name: string, description: string) {
+    const dialogRef = this.dialog.open(NewCategoryComponent, {
+      width: '450px',
+      data: {id: id, name: name, description: description}});
+    
+    dialogRef.afterClosed().subscribe(result => {
+
+      if(result == 1){
+        this.openSnackBar('Categoria actulizada', 'OK');
+        this.getCategories();
+      }else if(result == 2){
+        this.openSnackBar('Error al actualizar categoria', 'Error');
+      }      
+    });
+  }
+
+  
+  //Snackbar para mostrar mensajes de error o exito
   openSnackBar(message: string, action: string) : MatSnackBarRef<SimpleSnackBar> {
     return this.snackBar.open(message, action, {
       duration: 2000,
     });
   }
-
-
 }
 
 export interface CategoryElement {
