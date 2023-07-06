@@ -40,6 +40,11 @@ export class NewProductComponent implements OnInit {
       picture: ['', Validators.required]
     });
 
+    if(data != null){
+      this.updateForm(data);
+      this.estadoFormulario = "Actualizar"
+    }
+
 
    }
 
@@ -63,13 +68,25 @@ export class NewProductComponent implements OnInit {
     uploadImageData.append('stock', data.stock);
     uploadImageData.append('categoryId', data.category);
 
-    this.productService.saveProduct(uploadImageData).subscribe(
-      (data: any) => {
-        this.dialogRef.close(1);
-      }, (error: any) => {
-        this.dialogRef.close(2);
-      }
-    )}
+    if(this.data != null){
+      this.productService.updateProduct(uploadImageData, this.data.id).subscribe(
+        (data: any) => {
+          this.dialogRef.close(1);
+        }, (error: any) => {
+          this.dialogRef.close(2);
+        }
+      )
+    }else{
+      this.productService.saveProduct(uploadImageData).subscribe(
+        (data: any) => {
+          this.dialogRef.close(1);
+        }, (error: any) => {
+          this.dialogRef.close(2);
+        }
+      )}
+    }
+
+    
 
   onCancel(){
     this.dialogRef.close(3);
@@ -89,5 +106,17 @@ export class NewProductComponent implements OnInit {
     console.log(this.selectedFile);
     this.nameFile = this.selectedFile.name;
   }
+
+  updateForm(data: any){
+
+    this.productForm = this.fb.group({
+      name: [data.name, Validators.required],      
+      price: [data.price, Validators.required],
+      stock: [data.stock, Validators.required],
+      category: [data.category.id, Validators.required],
+      picture: ['', Validators.required]
+    });
+  }
+
 
 }
