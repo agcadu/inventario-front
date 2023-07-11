@@ -26,7 +26,7 @@ export class ProductComponent implements OnInit {
   }
 
   displayedColumns: string[] = ['id', 'name', 'price','stock','category','picture', 'actions'];
-  dataSource = new MatTableDataSource<ProductElerment>();
+  dataSource = new MatTableDataSource<ProductElement>();
 
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
@@ -41,16 +41,16 @@ export class ProductComponent implements OnInit {
 
   processProductResponse(resp: any) {
       
-      const dataProduct: ProductElerment[] = [];
+      const dataProduct: ProductElement[] = [];
   
       if(resp.metadata[0].code == "00"){
         let listProduct = resp.product.products;
-        listProduct.forEach((element: ProductElerment) => {         
+        listProduct.forEach((element: ProductElement) => {         
           element.picture = 'data:image/jpg;base64,' + element.picture;
           dataProduct.push(element);          
         }
         );
-        this.dataSource = new MatTableDataSource<ProductElerment>(dataProduct);
+        this.dataSource = new MatTableDataSource<ProductElement>(dataProduct);
         this.dataSource.paginator = this.paginator;
       }
       
@@ -124,7 +124,7 @@ export class ProductComponent implements OnInit {
 
 }
 
-export interface ProductElerment {
+export interface ProductElement {
   id: number;
   name: string;
   price: number;
